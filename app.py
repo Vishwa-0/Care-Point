@@ -36,4 +36,5 @@ model = joblib.load(MODEL_PATH)
 
 pred = model.predict([[age, mass, insu, plas]])
 
-st.write("Predicted risk:", pred)
+if st.button("Calculate Risk"):
+  st.write(pred)
