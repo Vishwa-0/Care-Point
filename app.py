@@ -1,5 +1,5 @@
 import streamlit as st
-import pickle
+import joblib
 import os
 
 st.title("Care Point")
@@ -24,18 +24,16 @@ st.header("Enter Your Information")
 
 age = st.number_input("Age", min_value=1, max_value=120, step=1)
 mass = st.number_input("Mass (kg)", min_value=1.0, step=0.1)
-insu= st.number_input("Insulin", min_value=2.0, step=0.1)
-plas= st.number_input("Plasma", min_value=25.0, step=0.1)
+insu = st.number_input("Insulin", min_value=2.0, step=0.1)
+plas = st.number_input("Plasma", min_value=25.0, step=0.1)
 family_history = st.selectbox("Family History of Diabetes?", ["No", "Yes"])
 
 st.write("---")
 st.header("Risk Assessment")
 
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "diabetes.pkl")
+model = joblib.load(MODEL_PATH)
 
-with open(MODEL_PATH, "rb") as f:
-    load_model = pickle.load(f)
+pred = model.predict([[age, mass, insu, plas]])
 
-
-pred = load_model.predict([[age,mass,insu,plas]])
-print(pred)
+st.write("Predicted risk:", pred[0])
