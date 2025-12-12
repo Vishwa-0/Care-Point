@@ -1,9 +1,6 @@
 import streamlit as st
 import pickle
 import os
-import joblib
-
-
 
 st.title("Care Point")
 
@@ -34,7 +31,11 @@ family_history = st.selectbox("Family History of Diabetes?", ["No", "Yes"])
 st.write("---")
 st.header("Risk Assessment")
 
-model = joblib.load("diabetes.pkl")
+MODEL_PATH = os.path.join(os.path.dirname(__file__), "diabetes.pkl")
 
-pred = model.predict([[age,mass,insu,plas]])
+with open(MODEL_PATH, "rb") as f:
+    load_model = pickle.load(f)
+
+
+pred = load_model.predict([[age,mass,insu,plas]])
 print(pred)
