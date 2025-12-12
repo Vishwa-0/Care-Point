@@ -8,7 +8,7 @@ st.write("This tool provides a basic diabetes risk estimation based on user-ente
 st.header("Disclaimer")
 st.write("NOTE: This tool does not provide medical advice, diagnosis, or treatment. Consult a healthcare professional for medical concerns.")
 
-st.write("You will be asked for:")
+st.subheader("You will be asked for:")
 st.write("- Age")
 st.write("- Weight and Height (for BMI)")
 st.write("- Fasting Glucose Level")
