@@ -30,6 +30,6 @@ family_history = st.selectbox("Family History of Diabetes?", ["No", "Yes"])
 st.write("---")
 st.header("Risk Assessment")
 
-load_model = pickle.load(open(diabetes, 'rb'))
+load_model = pickle.load(open(diabetes.plk, 'rb'))
 pred = load_model.predict([[age,mass,insu,plas]])
 print(pred)
