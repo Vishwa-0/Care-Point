@@ -36,4 +36,4 @@ model = joblib.load(MODEL_PATH)
 
 pred = model.predict([[age, mass, insu, plas]])
 
-st.write("Predicted risk:", pred[0])
+st.write("Predicted risk:", pred)
