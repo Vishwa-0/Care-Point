@@ -30,5 +30,5 @@ st.write("---")
 st.header("Risk Assessment")
 
 load_model = pickle.load(open(diabetes, 'rb'))
-pred = load_model.predict([[age,mass,insu,plas)
+pred = load_model.predict([[age,mass,insu,plas]])
 print(pred)
