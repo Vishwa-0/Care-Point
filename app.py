@@ -1,40 +1,96 @@
 import streamlit as st
 import joblib
 import os
+import numpy as np
 
-st.title("Care Point")
+# ---------------- Page Config ----------------
+st.set_page_config(
+    page_title="Care Point",
+    layout="wide"
+)
 
-st.header("Purpose")
-st.write("This tool provides a basic diabetes risk estimation based on user-entered information.")
+# ---------------- Load Model ----------------
+@st.cache_resource
+def load_model():
+    model_path = os.path.join(os.path.dirname(__file__), "diabetes.pkl")
+    return joblib.load(model_path)
 
-st.header("Disclaimer")
-st.write("NOTE: This tool does not provide medical advice, diagnosis, or treatment. Consult a healthcare professional for medical concerns.")
+model = load_model()
 
-st.subheader("You will be asked for:")
-st.write("- Age")
-st.write("- Mass")
-st.write("- Insulin")
-st.write("- Plasma")
-st.write("- Family History (yes/no)")
+# ---------------- Header ----------------
+st.markdown("""
+<style>
+.big-title { font-size: 3rem; font-weight: 700; }
+.subtle { color: #6c757d; }
+</style>
+""", unsafe_allow_html=True)
 
-st.write("The tool uses your inputs to generate a simple risk categorization for diabetes. No data is stored.")
+st.markdown("<div class='big-title'>Care Point</div>", unsafe_allow_html=True)
+st.markdown("<p class='subtle'>A minimal diabetes risk signal tool</p>", unsafe_allow_html=True)
 
-st.write("---")
-st.header("Enter Your Information")
+st.markdown("---")
 
-age = st.number_input("Age", min_value=1, max_value=120, step=1)
-mass = st.number_input("Mass (kg)", min_value=1.0, step=0.1)
-insu = st.number_input("Insulin", min_value=2.0, step=0.1)
-plas = st.number_input("Plasma", min_value=25.0, step=0.1)
-family_history = st.selectbox("Family History of Diabetes?", ["No", "Yes"])
+# ---------------- Layout ----------------
+left, center, right = st.columns([1.2, 1.6, 1.2])
 
-st.write("---")
-st.header("Risk Assessment")
+# ---------------- Inputs ----------------
+with left:
+    st.markdown("### Patient Inputs")
+    st.markdown("Numeric indicators only. No data is stored.")
 
-MODEL_PATH = os.path.join(os.path.dirname(__file__), "diabetes.pkl")
-model = joblib.load(MODEL_PATH)
+    st.markdown("---")
 
-pred = model.predict([[age, mass, insu, plas]])
+    age = st.slider("Age (years)", 1, 120, 35)
+    mass = st.number_input("Body Mass (kg)", min_value=30.0, max_value=200.0, step=0.5)
+    insu = st.number_input("Insulin Level", min_value=2.0, step=0.1)
+    plas = st.number_input("Plasma Glucose", min_value=25.0, step=0.1)
 
-if st.button("Calculate Risk"):
-  st.write(pred)
+    family_history = st.radio(
+        "Family History of Diabetes",
+        ["No", "Yes"],
+        horizontal=True
+    )
+
+    calculate = st.button("Assess Risk", use_container_width=True)
+
+# ---------------- Context ----------------
+with center:
+    st.markdown("### Context & Assumptions")
+    st.markdown("This tool provides a **statistical risk estimate**, not a diagnosis.")
+
+    st.markdown("---")
+
+    st.markdown("""
+    **Model notes:**
+    - Trained on historical patient data
+    - Uses linear decision boundaries
+    - Best interpreted as a screening signal
+    """)
+
+    st.info("Consult a qualified healthcare professional for medical advice.")
+
+# ---------------- Output ----------------
+with right:
+    st.markdown("### Risk Output")
+    st.markdown("Model-generated diabetes risk category.")
+
+    st.markdown("---")
+
+    if calculate:
+        family_val = 1 if family_history == "Yes" else 0
+        features = np.array([[age, mass, insu, plas, family_val]])
+        prediction = model.predict(features)[0]
+
+        if prediction == 1:
+            st.error("Higher diabetes risk detected")
+            st.progress(80)
+        else:
+            st.success("Lower diabetes risk detected")
+            st.progress(30)
+    else:
+        st.info("Enter values and assess risk")
+        st.progress(10)
+
+# ---------------- Footer ----------------
+st.markdown("---")
+st.caption("Care Point • Decision support, not medical advice")
