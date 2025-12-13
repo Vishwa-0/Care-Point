@@ -80,13 +80,13 @@ with right:
         family_val = 1 if family_history == "Yes" else 0
         features = np.array([[age, mass, insu, plas]])
         prediction = model.predict(features)[0]
-
-        if prediction == 1:
-            st.error("Higher diabetes risk detected")
-            st.progress(80)
+        if risk_prob < 0.3:
+            st.success(f"Low risk ({risk_prob:.2%})")
+        elif risk_prob < 0.6:
+            st.warning(f"Moderate risk ({risk_prob:.2%})")
         else:
-            st.success("Lower diabetes risk detected")
-            st.progress(30)
+            st.error(f"High risk ({risk_prob:.2%})")
+
     else:
         st.info("Enter values and assess risk")
         st.progress(10)
