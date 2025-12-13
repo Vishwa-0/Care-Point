@@ -6,6 +6,7 @@ import numpy as np
 # ---------------- Page Config ----------------
 st.set_page_config(
     page_title="Care Point",
+    page_icon="🩺",
     layout="wide"
 )
 
