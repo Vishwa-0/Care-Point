@@ -78,7 +78,7 @@ with right:
 
     if calculate:
         family_val = 1 if family_history == "Yes" else 0
-        features = np.array([[age, mass, insu, plas, family_val]])
+        features = np.array([[age, mass, insu, plas]])
         prediction = model.predict(features)[0]
 
         if prediction == 1:
